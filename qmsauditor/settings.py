@@ -32,6 +32,12 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.github.dev',
 ]
 
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+
 
 
 # Application definition
