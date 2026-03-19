@@ -10,9 +10,10 @@ function App() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://redesigned-barnacle-q7rwgjgq9xqpc4wpg-8000.app.github.dev/api/auth/login/",
-        { username, password }
-      );
+  `${process.env.REACT_APP_API_URL}/api/auth/login/`,
+  { username, password }
+);
+
       setMessage("Login successful ✅");
     } catch (err) {
       setMessage("Login failed ❌");

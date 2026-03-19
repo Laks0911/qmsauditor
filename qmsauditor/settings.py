@@ -167,4 +167,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://redesigned-barnacle-q7rwgjgq9xqpc4wpg-3000.app.github.dev',
+]
+
 AUTH_USER_MODEL = 'users.User'
