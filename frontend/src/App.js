@@ -13,8 +13,9 @@ function App() {
   `${process.env.REACT_APP_API_URL}/api/auth/login/`,
   { username, password }
 );
-
-      setMessage("Login successful ✅");
+localStorage.setItem('access', res.data.access);
+localStorage.setItem('refresh', res.data.refresh);
+setMessage("Login successful ✅");
     } catch (err) {
       setMessage("Login failed ❌");
     }
