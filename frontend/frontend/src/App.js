@@ -10,7 +10,7 @@ function App() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://redesigned-barnacle-q7rwgjgq9xqpc4wpg-8000.app.github.dev/api/auth/login/",
+        "https://redesigned-barnacle-q7rwgjgq9xqpc4wpg-8000.app.github.dev/api/auth/login",
         { username, password }
       );
       setMessage("Login successful ✅");
@@ -18,6 +18,7 @@ function App() {
       setMessage("Login failed ❌");
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
