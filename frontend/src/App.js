@@ -1,7 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
+import Dashboard from "./pages/Dashboard";
 
-function App() {
+function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -10,12 +13,12 @@ function App() {
     e.preventDefault();
     try {
       const res = await axios.post(
-  `${process.env.REACT_APP_API_URL}/api/auth/login/`,
-  { username, password }
-);
-localStorage.setItem('access', res.data.access);
-localStorage.setItem('refresh', res.data.refresh);
-setMessage("Login successful ✅");
+        `${process.env.REACT_APP_API_URL}/api/auth/login/`,
+        { username, password }
+      );
+      localStorage.setItem('access', res.data.access);
+      localStorage.setItem('refresh', res.data.refresh);
+      window.location.href = '/dashboard';
     } catch (err) {
       setMessage("Login failed ❌");
     }
@@ -24,9 +27,7 @@ setMessage("Login successful ✅");
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded shadow-md w-96">
-        <h1 className="text-2xl font-bold text-blue-600 mb-2">
-          QMSAuditor
-        </h1>
+        <h1 className="text-2xl font-bold text-blue-600 mb-2">QMSAuditor</h1>
         <p className="text-gray-500 mb-6">Sign in to your account</p>
         <form onSubmit={handleLogin}>
           <input
@@ -55,6 +56,20 @@ setMessage("Login successful ✅");
         )}
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={
+          <PrivateRoute><Dashboard /></PrivateRoute>
+        } />
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
