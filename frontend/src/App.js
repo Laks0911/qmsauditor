@@ -1,3 +1,4 @@
+import AuditDetail from './pages/AuditDetail';
 import { useState } from "react";
 import axios from "axios";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -67,6 +68,10 @@ function App() {
         <Route path="/dashboard" element={
           <PrivateRoute><Dashboard /></PrivateRoute>
         } />
+        <Route path="/audit/:id" element={
+    <PrivateRoute><AuditDetail /></PrivateRoute>
+} />
+
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>

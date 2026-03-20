@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -7,7 +8,7 @@ const statusStyles = {
     complete: 'bg-green-100 text-green-800',
 };
 
-const AuditList = () => {
+const AuditList = () => {const navigate = useNavigate();
     const [audits, setAudits] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -35,7 +36,12 @@ const AuditList = () => {
     return (
         <div className="mt-6 space-y-4">
             {audits.map(audit => (
-                <div key={audit.id} className="bg-white rounded shadow p-4 flex justify-between items-center">
+                <div
+    key={audit.id}
+    onClick={() => navigate(`/audit/${audit.id}`)}
+    className="bg-white rounded shadow p-4 flex justify-between items-center cursor-pointer hover:shadow-md transition"
+>
+
                     <div>
                         <h3 className="font-semibold text-gray-800">{audit.title}</h3>
                         <p className="text-sm text-gray-500">{audit.auditor} — {audit.date}</p>
