@@ -59,6 +59,19 @@ const AuditDetail = () => {
     const handleFindingAdded = (newFinding) => {
     setFindings(prev => [newFinding, ...prev]);
 };
+const updateStatus = async (newStatus) => {
+    try {
+        const res = await axios.patch(
+            `${process.env.REACT_APP_API_URL}/api/audits/${id}/`,
+            { status: newStatus },
+            { headers }
+        );
+        setAudit(res.data);
+    } catch (err) {
+        alert('Failed to update status. Check permissions.');
+    }
+};
+
 
 
     return (
@@ -81,21 +94,35 @@ const AuditDetail = () => {
 
             <main className="p-8 max-w-4xl mx-auto">
                 {/* Audit Header */}
-                <div className="bg-white rounded shadow p-6 mb-6">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-800">
-                                {audit.title}
-                            </h2>
-                            <p className="text-gray-500 mt-1">
-                                {audit.auditor} — {audit.date}
-                            </p>
-                        </div>
-                        <span className={`text-xs font-semibold px-3 py-1 rounded-full uppercase ${statusStyles[audit.status]}`}>
-                            {audit.status}
-                        </span>
-                    </div>
-                </div>
+<div className="bg-white rounded shadow p-6 mb-6">
+    <div className="flex justify-between items-start">
+        <div>
+            <h2 className="text-2xl font-bold text-gray-800">
+                {audit.title}
+            </h2>
+            <p className="text-gray-500 mt-1">
+                {audit.auditor} — {audit.date}
+            </p>
+        </div>
+        <div className="flex flex-col items-end gap-2">
+            <span className={`text-xs font-semibold px-3 py-1 rounded-full uppercase ${statusStyles[audit.status]}`}>
+                {audit.status}
+            </span>
+            {(user.role === 'admin' || user.role === 'auditor') && (
+                <select
+                    value={audit.status}
+                    onChange={(e) => updateStatus(e.target.value)}
+                    className="text-sm border rounded p-1 text-gray-600"
+                >
+                    <option value="planned">Planned</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="complete">Complete</option>
+                </select>
+            )}
+        </div>
+    </div>
+</div>
+
                 {(user.role === 'admin' || user.role === 'auditor') && (
     <AddFindingForm
         auditId={id}
