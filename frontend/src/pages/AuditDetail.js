@@ -1,3 +1,4 @@
+import AddFindingForm from '../components/AddFindingForm';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -55,6 +56,10 @@ const AuditDetail = () => {
             <p className="text-red-500">Audit not found.</p>
         </div>
     );
+    const handleFindingAdded = (newFinding) => {
+    setFindings(prev => [newFinding, ...prev]);
+};
+
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -91,6 +96,14 @@ const AuditDetail = () => {
                         </span>
                     </div>
                 </div>
+                {(user.role === 'admin' || user.role === 'auditor') && (
+    <AddFindingForm
+        auditId={id}
+        token={token}
+        onFindingAdded={handleFindingAdded}
+    />
+)}
+
 
                 {/* Findings Section */}
                 <div className="flex justify-between items-center mb-4">
