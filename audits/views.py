@@ -1,15 +1,23 @@
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from .models import Audit, Finding
 from .serializers import AuditSerializer, FindingSerializer
 
+
 class AuditViewSet(viewsets.ModelViewSet):
-    queryset = Audit.objects.all()
+    queryset = Audit.objects.all().order_by('-created_at')
     serializer_class = AuditSerializer
+    permission_classes = [IsAuthenticated]
+
 
 class FindingViewSet(viewsets.ModelViewSet):
-    queryset = Finding.objects.all()
     serializer_class = FindingSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        audit_id = self.request.query_params.get('audit_id')
+        if audit_id:
+            return Finding.objects.filter(
+                audit_id=audit_id
+            ).order_by('-created_at')
+        return Finding.objects.all().order_by('-created_at')

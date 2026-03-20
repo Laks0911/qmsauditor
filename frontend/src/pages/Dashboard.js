@@ -34,7 +34,7 @@ const Dashboard = () => {
             </nav>
             <main className="p-8">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                    Welcome back, {user.username} 👋
+                    Welcome back, {user.username} 👋l
                 </h2>
                 <p className="text-gray-500">
                     You are logged in as <strong>{user.role}</strong>.
