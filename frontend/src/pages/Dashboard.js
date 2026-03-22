@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import StatsCards from '../components/StatsCards';
 import AuditList from '../components/AuditList';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +9,21 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem('access');
     const user = jwtDecode(token);
+    const [allFindings, setAllFindings] = useState([]);
+const [audits, setAudits] = useState([]);
+const API = process.env.REACT_APP_API_URL;
+const headers = { Authorization: `Bearer ${token}` };
+
+useEffect(() => {
+    Promise.all([
+        axios.get(`${API}/api/audits/`, { headers }),
+        axios.get(`${API}/api/findings/`, { headers })
+    ]).then(([auditsRes, findingsRes]) => {
+        setAudits(auditsRes.data);
+        setAllFindings(findingsRes.data);
+    });
+}, []);
+
 
     const handleLogout = () => {
         localStorage.removeItem('access');
@@ -38,6 +56,7 @@ const Dashboard = () => {
                 </h2>
                 <p className="text-gray-500">
                     You are logged in as <strong>{user.role}</strong>.
+                <StatsCards audits={audits} findings={allFindings} />
                 </p><AuditList />
             </main>
         </div>
