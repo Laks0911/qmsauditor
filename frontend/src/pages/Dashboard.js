@@ -1,3 +1,4 @@
+import RecentFindings from '../components/RecentFindings';
 import FindingSeverityChart from '../components/FindingSeverityChart';
 import AuditStatusChart from '../components/AuditStatusChart';
 import { useEffect, useState } from 'react';
@@ -65,6 +66,11 @@ useEffect(() => {
     <AuditStatusChart audits={audits} />
     <FindingSeverityChart findings={allFindings} />
 </div>
+<RecentFindings
+    findings={allFindings}
+    audits={audits}
+/>
+
 
 
                 
