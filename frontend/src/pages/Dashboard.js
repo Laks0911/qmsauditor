@@ -1,3 +1,4 @@
+import FindingSeverityChart from '../components/FindingSeverityChart';
 import AuditStatusChart from '../components/AuditStatusChart';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -62,7 +63,9 @@ useEffect(() => {
 
 <div className="grid grid-cols-2 gap-6 mb-8">
     <AuditStatusChart audits={audits} />
+    <FindingSeverityChart findings={allFindings} />
 </div>
+
 
                 
                 </p><AuditList />
