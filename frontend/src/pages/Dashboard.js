@@ -1,3 +1,4 @@
+import AuditStatusChart from '../components/AuditStatusChart';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import StatsCards from '../components/StatsCards';
@@ -57,6 +58,13 @@ useEffect(() => {
                 <p className="text-gray-500">
                     You are logged in as <strong>{user.role}</strong>.
                 <StatsCards audits={audits} findings={allFindings} />
+                
+
+<div className="grid grid-cols-2 gap-6 mb-8">
+    <AuditStatusChart audits={audits} />
+</div>
+
+                
                 </p><AuditList />
             </main>
         </div>
