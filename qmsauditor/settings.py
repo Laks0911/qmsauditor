@@ -34,7 +34,10 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.github.dev',
     'http://localhost:8000',
     'https://localhost:8000',
+    'https://*.vercel.app',
+    'https://*.railway.app',
 ]
+
 
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
@@ -170,7 +173,12 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'https://redesigned-barnacle-q7rwgjgq9xqpc4wpg-3000.app.github.dev',
+    'https://qmsauditor.vercel.app',
+    'https://qmsauditor-git-main.vercel.app',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 AUTH_USER_MODEL = 'users.User'
 # ── PRODUCTION SETTINGS ──────────────────────────────────────
