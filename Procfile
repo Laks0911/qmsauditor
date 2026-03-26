@@ -1,0 +1,1 @@
+web: gunicorn qmsauditor.wsgi --log-file -

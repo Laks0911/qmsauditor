@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-eng73d(6d)#(!qgh9#z7m3yn0omqrg0xj1-eb9@d(m8ip7nhie
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']  # Will be restricted post-MVP
 
 # ── CSRF & SESSION — Permanent Codespace Fix ─────────────────
 CSRF_TRUSTED_ORIGINS = [
@@ -173,3 +173,14 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 AUTH_USER_MODEL = 'users.User'
+# ── PRODUCTION SETTINGS ──────────────────────────────────────
+import os
+
+# Static files — WhiteNoise serves static files in production
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Security
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
