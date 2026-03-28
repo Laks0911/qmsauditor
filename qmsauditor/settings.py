@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from dotenv import load_dotenv
 load_dotenv()
 from pathlib import Path
+import os
+from decouple import config
+import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,9 +28,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-eng73d(6d)#(!qgh9#z7m3yn0omqrg0xj1-eb9@d(m8ip7nhie"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']  # Will be restricted post-MVP
+ALLOWED_HOSTS = [
+    'qmsauditor-production.up.railway.app',
+    'localhost',
+    '127.0.0.1',
+]  # Will be restricted post-MVP
 
 # ── CSRF & SESSION — Permanent Codespace Fix ─────────────────
 CSRF_TRUSTED_ORIGINS = [
