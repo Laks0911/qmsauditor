@@ -18,11 +18,14 @@ const AuditList = () => {
 
     useEffect(() => {
         axios.get(
-            `${process.env.REACT_APP_API_URL}/api/audits/`,
+            `https://qmsauditor-production.up.railway.app/api/audits/`,
             { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(res => {
-            setAudits(res.data);
+            // Handle Django REST pagination format
+const auditsData = res.data.results || res.data;
+setAudits(Array.isArray(auditsData) ? auditsData : []);
+
             setLoading(false);
         })
         .catch(() => {
