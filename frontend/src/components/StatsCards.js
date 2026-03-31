@@ -1,65 +1,65 @@
-const StatsCards = ({ audits, findings }) => {
+import React from 'react';
+import { Card, Row, Col, Statistic } from 'antd';
+import { CheckCircleOutlined, AlertOutlined, ClockCircleOutlined } from '@ant-design/icons';
 
-    const totalAudits = audits.length;
-    const planned = audits.filter(a => a.status === 'planned').length;
-    const inProgress = audits.filter(a => a.status === 'in_progress').length;
-    const complete = audits.filter(a => a.status === 'complete').length;
+const StatsCards = ({ audits = [], findings = [] }) => {
+  // Ensure audits and findings are always arrays
+  const auditArray = Array.isArray(audits) ? audits : (audits.results || []);
+  const findingArray = Array.isArray(findings) ? findings : (findings.results || []);
 
-    const totalFindings = findings.length;
-    const openFindings = findings.filter(f => f.status === 'open').length;
-    const criticalFindings = findings.filter(f => f.severity === 'critical').length;
-    const closedFindings = findings.filter(f => f.status === 'closed').length;
+  // Calculate stats safely
+  const totalAudits = auditArray.length;
+  const completedAudits = auditArray.filter(
+    (audit) => audit.status === 'completed'
+  ).length;
+  const pendingAudits = auditArray.filter(
+    (audit) => audit.status === 'pending'
+  ).length;
+  const totalFindings = findingArray.length;
 
-    const cards = [
-        {
-            label: 'Total Audits',
-            value: totalAudits,
-            colour: 'bg-blue-50 border-blue-200 text-blue-700'
-        },
-        {
-            label: 'In Progress',
-            value: inProgress,
-            colour: 'bg-yellow-50 border-yellow-200 text-yellow-700'
-        },
-        {
-            label: 'Complete',
-            value: complete,
-            colour: 'bg-green-50 border-green-200 text-green-700'
-        },
-        {
-            label: 'Open Findings',
-            value: openFindings,
-            colour: 'bg-red-50 border-red-200 text-red-700'
-        },
-        {
-            label: 'Critical',
-            value: criticalFindings,
-            colour: 'bg-orange-50 border-orange-200 text-orange-700'
-        },
-        {
-            label: 'Closed Findings',
-            value: closedFindings,
-            colour: 'bg-gray-50 border-gray-200 text-gray-700'
-        },
-    ];
+  const cards = [
+    {
+      title: 'Total Audits',
+      value: totalAudits,
+      icon: <ClockCircleOutlined />,
+      color: '#1890ff',
+    },
+    {
+      title: 'Completed',
+      value: completedAudits,
+      icon: <CheckCircleOutlined />,
+      color: '#52c41a',
+    },
+    {
+      title: 'Pending',
+      value: pendingAudits,
+      icon: <AlertOutlined />,
+      color: '#faad14',
+    },
+    {
+      title: 'Total Findings',
+      value: totalFindings,
+      icon: <AlertOutlined />,
+      color: '#ff4d4f',
+    },
+  ];
 
-    return (
-        <div className="grid grid-cols-3 gap-4 mb-8">
-            {cards.map((card, i) => (
-                <div
-                    key={i}
-                    className={`border rounded-lg p-4 ${card.colour}`}
-                >
-                    <p className="text-sm font-medium opacity-75">
-                        {card.label}
-                    </p>
-                    <p className="text-3xl font-bold mt-1">
-                        {card.value}
-                    </p>
-                </div>
-            ))}
-        </div>
-    );
+  return (
+    <Row gutter={16}>
+      {cards.map((card, i) => (
+        <Col xs={24} sm={12} lg={6} key={i}>
+          <Card>
+            <Statistic
+              title={card.title}
+              value={card.value}
+              prefix={card.icon}
+              valueStyle={{ color: card.color }}
+            />
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  );
 };
 
 export default StatsCards;

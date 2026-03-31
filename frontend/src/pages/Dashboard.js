@@ -22,8 +22,17 @@ useEffect(() => {
         axios.get(`${API}/api/audits/`, { headers }),
         axios.get(`${API}/api/findings/`, { headers })
     ]).then(([auditsRes, findingsRes]) => {
-        setAudits(auditsRes.data);
-        setAllFindings(findingsRes.data);
+        // Handle DRF pagination: extract results array safely
+const auditsData = Array.isArray(auditsRes.data) 
+  ? auditsRes.data 
+  : (auditsRes.data.results || []);
+const findingsData = Array.isArray(findingsRes.data) 
+  ? findingsRes.data 
+  : (findingsRes.data.results || []);
+
+setAudits(auditsData);
+setAllFindings(findingsData);
+ 
     });
 }, []);
 
