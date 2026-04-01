@@ -17,10 +17,7 @@ const AuditList = () => {
     const token = localStorage.getItem('access');
 
     useEffect(() => {
-        axios.get(
-            `https://qmsauditor-production.up.railway.app/api/audits/`,
-            { headers: { Authorization: `Bearer ${token}` } }
-        )
+        axios.get(`${process.env.REACT_APP_API_URI}/audits/`, { headers })
         .then(res => {
             // Handle Django REST pagination format
 const auditsData = res.data.results || res.data;
