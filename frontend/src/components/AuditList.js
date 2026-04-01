@@ -15,6 +15,8 @@ const AuditList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const token = localStorage.getItem('access');
+const headers = { Authorization: `Bearer ${token}` };
+
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URI}/audits/`, { headers })
