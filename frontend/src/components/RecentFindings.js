@@ -19,7 +19,10 @@ const RecentFindings = ({ findings, audits }) => {
         .slice(0, 5);
 
     const getAuditTitle = (auditId) => {
-        const audit = audits.find(a => a.id === auditId);
+        const getAuditTitle = (auditId) => {
+  const auditsArray = Array.isArray(audits) ? audits : (audits.results || []);
+  const audit = auditsArray.find(a => a.id === auditId);
+
         return audit ? audit.title : 'Unknown Audit';
     };
 

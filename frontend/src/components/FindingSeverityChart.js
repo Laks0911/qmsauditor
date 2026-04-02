@@ -4,22 +4,26 @@ import {
 } from 'recharts';
 
 const FindingSeverityChart = ({ findings }) => {
+    const FindingSeverityChart = (( findings )) => {
+  // Handle DRF pagination - extract results array if needed
+  const findingsArray = Array.isArray(findings) ? findings : (findings.results || []);
+
 
     const data = [
         {
             severity: 'Minor',
-            Open: findings.filter(f => f.severity === 'minor' && f.status === 'open').length,
-            Closed: findings.filter(f => f.severity === 'minor' && f.status === 'closed').length,
+            Open: findingsArray.filter(f => f.severity === 'minor' && f.status === 'open').length,
+            Closed: findingsArray.filter(f => f.severity === 'minor' && f.status === 'closed').length,
         },
         {
             severity: 'Major',
-            Open: findings.filter(f => f.severity === 'major' && f.status === 'open').length,
-            Closed: findings.filter(f => f.severity === 'major' && f.status === 'closed').length,
+            Open: findingsArray.filter(f => f.severity === 'major' && f.status === 'open').length,
+            Closed: findingsArray.filter(f => f.severity === 'major' && f.status === 'closed').length,
         },
         {
             severity: 'Critical',
-            Open: findings.filter(f => f.severity === 'critical' && f.status === 'open').length,
-            Closed: findings.filter(f => f.severity === 'critical' && f.status === 'closed').length,
+            Open: findingsArray.filter(f => f.severity === 'critical' && f.status === 'open').length,
+            Closed: findingsArray.filter(f => f.severity === 'critical' && f.status === 'closed').length,
         },
     ];
 
