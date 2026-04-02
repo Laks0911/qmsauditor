@@ -19,12 +19,11 @@ const RecentFindings = ({ findings, audits }) => {
         .slice(0, 5);
 
     const getAuditTitle = (auditId) => {
-        const getAuditTitle = (auditId) => {
-  const auditsArray = Array.isArray(audits) ? audits : (audits.results || []);
-  const audit = auditsArray.find(a => a.id === auditId);
-
+        const auditsArray = Array.isArray(audits) ? audits : (audits.results || []);
+        const audit = auditsArray.find(a => a.id === auditId);
         return audit ? audit.title : 'Unknown Audit';
-    };
+};
+
 
     if (findings.length === 0) return (
         <div className="bg-white rounded shadow p-6">
