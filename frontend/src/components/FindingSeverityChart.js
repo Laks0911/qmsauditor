@@ -3,10 +3,10 @@ import {
     Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
-const FindingSeverityChart = ({ findings }) => {
-    const FindingSeverityChart = (( findings )) => {
+const FindingSeverityChart = (findings) => {
   // Handle DRF pagination - extract results array if needed
   const findingsArray = Array.isArray(findings) ? findings : (findings.results || []);
+
 
 
     const data = [
