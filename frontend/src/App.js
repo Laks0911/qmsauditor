@@ -1,9 +1,14 @@
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
+import LayoutComponent from './components/Layout';
+import AuditList from './components/AuditList';
+import Findings from './pages/Findings';
 import AuditDetail from './pages/AuditDetail';
-import { useState } from "react";
-import axios from "axios";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import PrivateRoute from "./components/PrivateRoute";
-import Dashboard from "./pages/Dashboard";
+import { useState } from 'react';
+import axios from 'axios';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute';
+import Dashboard from './pages/Dashboard';
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -62,20 +67,61 @@ function Login() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={
-          <PrivateRoute><Dashboard /></PrivateRoute>
-        } />
-        <Route path="/audit/:id" element={
-    <PrivateRoute><AuditDetail /></PrivateRoute>
-} />
-
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  <BrowserRouter>
+    <Routes>
+      <Route
+        path="/dashboard"
+        element={
+          <LayoutComponent>
+            <Dashboard />
+          </LayoutComponent>
+        }
+      />
+      <Route
+        path="/audits"
+        element={
+          <LayoutComponent>
+            <AuditList />
+          </LayoutComponent>
+        }
+      />
+      <Route
+        path="/audit/:id"
+        element={
+          <LayoutComponent>
+            <AuditDetail />
+          </LayoutComponent>
+        }
+      />
+      <Route
+        path="/findings"
+        element={
+          <LayoutComponent>
+            <Findings />
+          </LayoutComponent>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <LayoutComponent>
+            <Reports />
+          </LayoutComponent>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <LayoutComponent>
+            <Settings />
+          </LayoutComponent>
+        }
+      />
+      <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
+    </Routes>
+  </BrowserRouter>
+);
 }
 
 export default App;
