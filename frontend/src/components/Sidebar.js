@@ -16,9 +16,15 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/');
-  };
+  // Remove both access and refresh tokens
+  localStorage.removeItem('access');
+  localStorage.removeItem('refresh');
+  
+  // Clear any pending axios requests
+  window.location.href = '/login';  // Hard redirect, not navigate()
+};
+
+
 
   const menuItems = [
     {

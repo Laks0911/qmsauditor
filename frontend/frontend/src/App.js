@@ -1,3 +1,7 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import AuditDetail from './pages/AuditDetail';
+import AuditList from './components/AuditList';
 import { useState } from "react";
 import axios from "axios";
 
@@ -20,12 +24,13 @@ function App() {
   };
    
 
+ // If not logged in, show login form
+if (!token) {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded shadow-md w-96">
-        <h1 className="text-2xl font-bold text-blue-600 mb-2">
-          QMSAuditor
-        </h1>
+      {/* existing login form code - keep lines 24-56 as is */}
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-bold text-blue-600 mb-2">QMSAuditor</h1>
         <p className="text-gray-500 mb-6">Sign in to your account</p>
         <form onSubmit={handleLogin}>
           <input
@@ -55,6 +60,21 @@ function App() {
       </div>
     </div>
   );
+}
+
+// If logged in, show the app with routes
+return (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/audits" element={<AuditList />} />
+      <Route path="/audit/:id" element={<AuditDetail />} />
+      <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
+    </Routes>
+  </BrowserRouter>
+);
+ 
 }
 
 export default App;

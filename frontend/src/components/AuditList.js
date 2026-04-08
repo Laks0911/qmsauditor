@@ -19,7 +19,7 @@ const headers = { Authorization: `Bearer ${token}` };
 
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URI}/audits/`, { headers })
+        axios.get(`${process.env.REACT_APP_API_URI}/api/audits/`, { headers })
         .then(res => {
             // Handle Django REST pagination format
 const auditsData = res.data.results || res.data;
