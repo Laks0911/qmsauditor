@@ -34,6 +34,7 @@ setAudits(Array.isArray(auditsData) ? auditsData : []);
     }, []);
 
     const filtered = filter === 'all'
+    
         ? audits
         : audits.filter(a => a.status === filter);
 
