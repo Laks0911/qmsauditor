@@ -76,3 +76,4 @@ const AddFindingForm = ({ auditId, token, onFindingAdded }) => {
 };
 
 export default AddFindingForm;
+  

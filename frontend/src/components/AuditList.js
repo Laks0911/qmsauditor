@@ -9,14 +9,37 @@ const statusStyles = {
 };
 
 const AuditList = () => {
-    const navigate = useNavigate();
-    const [audits, setAudits] = useState([]);
-    const [filter, setFilter] = useState('all');
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const token = localStorage.getItem('access');
-const headers = { Authorization: `Bearer ${token}` };
+  // ... state declarations ...
 
+  // ADD THIS NEW FUNCTION HERE
+  const fetchAudits = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URI}/api/audits/`,
+        { headers }
+      );
+      setAudits(Array.isArray(response.data.results) ? response.data.results : []);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to load audits.');
+      setLoading(false);
+    }
+  };
+
+  // NOW USE IT IN USEEFFECT
+  useEffect(() => {
+    fetchAudits();
+  }, []);
+
+  // NOW IT WORKS IN HANDLECREATEAUDIT
+  const handleCreateAudit = async () => {
+    // ... your code ...
+    fetchAudits();  // THIS WILL NOW WORK ✅
+  };
+
+  // ... rest of component ...
+};
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URI}/api/audits/`, { headers })
@@ -34,7 +57,7 @@ setAudits(Array.isArray(auditsData) ? auditsData : []);
     }, []);
 
     const filtered = filter === 'all'
-    
+    /'. /;'
         ? audits
         : audits.filter(a => a.status === filter);
 
@@ -44,11 +67,57 @@ setAudits(Array.isArray(auditsData) ? auditsData : []);
     if (error) return (
         <p className="text-red-500">{error}</p>
     );
+const handleCreateAudit = async () => {
+  if (!newAudit.title.trim()) {
+    alert('Please enter an audit title');
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+  `${process.env.REACT_APP_API_URI}/api/audits/`,
+  {
+    title: newAudit.title,
+    date: new Date().toISOString().split('T')[0],
+    auditor: 'laks',  // Use logged-in user
+    status: newAudit.status
+  }
+);
+
+    
+    // Reset form and close modal
+    setNewAudit({ title: '', description: '', status: 'planned' });
+    setShowCreateModal(false);
+    
+    // Refresh audits list
+    fetchAudits();
+  } catch (err) {
+    alert('Failed to create audit: ' + err.message);
+  }
+};
 
     return (
         <div>
             {/* Filter Buttons */}
             <div className="flex gap-2 mb-4">
+                <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <h2>Audits</h2>
+  <button 
+    onClick={() => setShowCreateModal(true)}
+    style={{
+      backgroundColor: '#3b82f6',
+      color: 'white',
+      padding: '8px 16px',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontWeight: 'bold'
+    }}
+  >
+    + New Audit
+  </button>
+</div>
+
                 {['all', 'planned', 'in_progress', 'complete'].map(s => (
                     <button
                         key={s}
@@ -99,8 +168,110 @@ setAudits(Array.isArray(auditsData) ? auditsData : []);
                     ))}
                 </div>
             )}
+        {showCreateModal && (
+  <div style={{
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000
+  }}>
+    <div style={{
+      backgroundColor: 'white',
+      padding: '30px',
+      borderRadius: '8px',
+      width: '90%',
+      maxWidth: '500px',
+      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+    }}>
+      <h3>Create New Audit</h3>
+      
+      <input
+        type="text"
+        placeholder="Audit Title (e.g., ISO 9001 Q2 2026)"
+        value={newAudit.title}
+        onChange={(e) => setNewAudit({ ...newAudit, title: e.target.value })}
+        style={{
+          width: '100%',
+          padding: '10px',
+          marginBottom: '15px',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          boxSizing: 'border-box'
+        }}
+      />
+      
+      <textarea
+        placeholder="Description (optional)"
+        value={newAudit.description}
+        onChange={(e) => setNewAudit({ ...newAudit, description: e.target.value })}
+        style={{
+          width: '100%',
+          padding: '10px',
+          marginBottom: '15px',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          boxSizing: 'border-box',
+          minHeight: '80px'
+        }}
+      />
+      
+      <select
+        value={newAudit.status}
+        onChange={(e) => setNewAudit({ ...newAudit, status: e.target.value })}
+        style={{
+          width: '100%',
+          padding: '10px',
+          marginBottom: '15px',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          boxSizing: 'border-box'
+        }}
+      >
+        <option value="planned">Planned</option>
+        <option value="in_progress">In Progress</option>
+        <option value="complete">Complete</option>
+      </select>
+      
+      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+        <button
+          onClick={() => setShowCreateModal(false)}
+          style={{
+            padding: '10px 20px',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            backgroundColor: '#f3f4f6'
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleCreateAudit}
+          style={{
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            backgroundColor: '#3b82f6',
+            color: 'white',
+            fontWeight: 'bold'
+          }}
+        >
+          Create Audit
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
         </div>
     );
-};
+;
 
 export default AuditList;

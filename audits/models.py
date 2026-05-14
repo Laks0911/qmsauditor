@@ -49,4 +49,3 @@ class Finding(models.Model):
 
     def __str__(self):
         return f"{self.audit.title} — {self.severity}"
-    
