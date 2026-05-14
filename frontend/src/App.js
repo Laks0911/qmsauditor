@@ -1,34 +1,34 @@
-import { AuthProvider } from './context/AuthContext';
-import ErrorBoundary from './components/ErrorBoundary';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Reports from './pages/Reports';
-import Settings from './pages/Settings';
-import LayoutComponent from './components/Layout';
-import AuditList from './components/AuditList';
-import Findings from './pages/Findings';
-import AuditDetail from './pages/AuditDetail';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import PrivateRoute from './components/PrivateRoute';
 import setupAxios from './axiosConfig';
 import Dashboard from './pages/Dashboard';
-import { useAuth } from './context/AuthContext';
+import AuditDetail from './pages/AuditDetail';
+import Findings from './pages/Findings';
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
+import LayoutComponent from './components/Layout';
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const { login, loading } = useAuth();
+  const { login, loading } = useAuth();  // ← ADD THIS LINE
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
     
-    const success = await login(username, password);
+    const success = await login(email, password);
     
     if (success) {
       setMessage("Login successful!");
-      window.location.href = '/dashboard';
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 500);
     } else {
       setMessage("Login failed: Invalid credentials");
     }
@@ -46,6 +46,7 @@ function Login() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full border p-2 rounded mb-4"
+            required
           />
           <input
             type="password"
@@ -53,22 +54,24 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border p-2 rounded mb-4"
+            required
           />
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
         {message && (
-          <p className="mt-4 text-center text-sm">{message}</p>
+          <p className="mt-4 text-center text-sm text-red-600">{message}</p>
         )}
       </div>
     </div>
   );
 }
+
 
 function App() {
   setupAxios();
@@ -81,23 +84,23 @@ function App() {
   
   // If token exists, show protected routes
   return (
-    <AuthProvider>
+  <AuthProvider>
     <ErrorBoundary>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/dashboard" element={<LayoutComponent><Dashboard /></LayoutComponent>} />
-        <Route path="/audits" element={<LayoutComponent><AuditList /></LayoutComponent>} />
-        <Route path="/audit/:id" element={<LayoutComponent><AuditDetail /></LayoutComponent>} />
-        <Route path="/findings" element={<LayoutComponent><Findings /></LayoutComponent>} />
-        <Route path="/reports" element={<LayoutComponent><Reports /></LayoutComponent>} />
-        <Route path="/settings" element={<LayoutComponent><Settings /></LayoutComponent>} />
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route path="*" element={<Navigate to="/dashboard" />} />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<PrivateRoute element={<LayoutComponent><Dashboard /></LayoutComponent>} />} />
+          <Route path="/audit/:id" element={<PrivateRoute element={<LayoutComponent><AuditDetail /></LayoutComponent>} />} />
+          <Route path="/findings" element={<PrivateRoute element={<LayoutComponent><Findings /></LayoutComponent>} />} />
+          <Route path="/reports" element={<PrivateRoute element={<LayoutComponent><Reports /></LayoutComponent>} />} />
+          <Route path="/settings" element={<PrivateRoute element={<LayoutComponent><Settings /></LayoutComponent>} />} />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+        </Routes>
+      </BrowserRouter>
     </ErrorBoundary>
-    </AuthProvider>
-  );
+  </AuthProvider>
+);
+
 }
 
 
