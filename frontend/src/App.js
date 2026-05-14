@@ -1,3 +1,5 @@
+import ErrorBoundary from './components/ErrorBoundary';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import LayoutComponent from './components/Layout';
@@ -109,6 +111,7 @@ function App() {
   
   // If token exists, show protected routes
   return (
+    <ErrorBoundary>
     <BrowserRouter>
       <Routes>
         <Route path="/dashboard" element={<LayoutComponent><Dashboard /></LayoutComponent>} />
@@ -121,6 +124,7 @@ function App() {
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
