@@ -1,8 +1,20 @@
+import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-const PrivateRoute = ({ children }) => {
-    const token = localStorage.getItem('access');
-    return token ? children : <Navigate to="/login" />;
-};
+function PrivateRoute({ element }) {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return element;
+}
 
 export default PrivateRoute;
+

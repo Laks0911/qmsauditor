@@ -1,3 +1,4 @@
+import { AuthProvider } from './context/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Reports from './pages/Reports';
@@ -12,57 +13,25 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
 import setupAxios from './axiosConfig';
 import Dashboard from './pages/Dashboard';
+import { useAuth } from './context/AuthContext';
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const { login, loading } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post(
-  `${process.env.REACT_APP_API_URI}/api/auth/login/`,
-  { username, password }
-);
-// Only store token if it's valid
-
-      if (res.data.access && res.data.refresh) {
-  console.log("✅ Tokens received:", {
-    access: res.data.access.substring(0, 20) + "...",
-    refresh: res.data.refresh.substring(0, 20) + "..."
-  });
-  
-  localStorage.setItem('access', res.data.access);
-  localStorage.setItem('refresh', res.data.refresh);
-  
-  console.log("✅ Tokens stored in localStorage");
-  console.log("✅ localStorage contents:", {
-    access: localStorage.getItem('access')?.substring(0, 20),
-    refresh: localStorage.getItem('refresh')?.substring(0, 20)
-  });
-  
-  // Add small delay before redirect
-  setTimeout(() => {
-    window.location.href = '/dashboard';
-  }, 500);
-} else {
-  console.error("❌ No tokens in response:", res.data);
-  setMessage('Login failed: Invalid response from server');
-}
-
-
+    
+    const success = await login(username, password);
+    
+    if (success) {
+      setMessage("Login successful!");
       window.location.href = '/dashboard';
-    } catch (err) {
-  console.error("❌ Login error:", err.message);
-  console.error("❌ Full error:", err);
-  if (err.response) {
-    console.error("❌ Response status:", err.response.status);
-    console.error("❌ Response data:", err.response.data);
-  }
-  setMessage("Login failed ❌");
-}
-
+    } else {
+      setMessage("Login failed: Invalid credentials");
+    }
   };
 
   return (
@@ -87,9 +56,10 @@ function Login() {
           />
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
           >
-            Sign In
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
         {message && (
@@ -111,6 +81,7 @@ function App() {
   
   // If token exists, show protected routes
   return (
+    <AuthProvider>
     <ErrorBoundary>
     <BrowserRouter>
       <Routes>
@@ -125,6 +96,7 @@ function App() {
       </Routes>
     </BrowserRouter>
     </ErrorBoundary>
+    </AuthProvider>
   );
 }
 
