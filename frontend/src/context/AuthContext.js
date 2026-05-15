@@ -1,80 +1,61 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useCallback } from 'react';
 import axios from 'axios';
 
-// Create the context
+// Create the context - MUST be exported
 const AuthContext = createContext();
 
-// Create the provider component
-export function AuthProvider({ children }) {
+// AuthProvider component
+const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(localStorage.getItem('access') || null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Check if user is logged in on mount
-  useEffect(() => {
-    const savedToken = localStorage.getItem('access');
-    if (savedToken) {
-      setToken(savedToken);
-      // Optionally verify token is still valid
-      axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
-    }
-    setLoading(false);
-  }, []);
+  const login = useCallback(async (email, password) => {
+    setLoading(true);
+    setError(null);
 
-  // Login function
-  const login = async (username, password) => {
     try {
-      setLoading(true);
-      setError(null);
-      
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/auth/login/`,
-        { username, password }
+        { email, password }
       );
 
-      const { access, refresh } = response.data;
-      
-      // Save tokens
+      const { access, refresh, user: userData } = response.data;
+
+      // Store tokens
       localStorage.setItem('access', access);
       localStorage.setItem('refresh', refresh);
-      
-      // Set axios default header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-      
+
+      // Set state
       setToken(access);
-      setError(null);
-      
+      setUser(userData);
+      setLoading(false);
+
       return true;
     } catch (err) {
       setError(err.response?.data?.detail || 'Login failed');
-      return false;
-    } finally {
       setLoading(false);
+      return false;
     }
-  };
+  }, []);
 
-  // Logout function
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('access');
     localStorage.removeItem('refresh');
-    delete axios.defaults.headers.common['Authorization'];
     setToken(null);
     setUser(null);
-  };
-
-  // Check if user is authenticated
-  const isAuthenticated = !!token;
+    setError(null);
+  }, []);
 
   const value = {
     user,
-    setUser,
     token,
     loading,
     error,
     login,
     logout,
-    isAuthenticated
+    isAuthenticated: !!token,
   };
 
   return (
@@ -82,15 +63,17 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-// Custom hook to use auth context
-export function useAuth() {
-  const context = useContext(AuthContext);
-  
+// Custom hook - exported for convenience
+const useAuth = () => {
+  const context = React.useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within AuthProvider');
   }
-  
   return context;
-}
+};
+
+// EXPORTS - All three must be available
+export { AuthContext, AuthProvider, useAuth };
+export default AuthProvider;
